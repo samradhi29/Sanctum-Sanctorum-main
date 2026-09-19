@@ -23,3 +23,10 @@ I used Claude to help with the duplicate ISBN query.
 7. after running using chatgpt for debugging
 - fixed import errors
 
+
+____________________________________________________
+members
+
+8. in memebers service fixed tier_at_least > to >=
+9. fixed email normalization (strip+lower)
+
