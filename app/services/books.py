@@ -5,7 +5,7 @@ from fastapi import HTTPException
 from sqlalchemy import select , func , or_
 from sqlalchemy.orm import Session
 from app.models import Book
-from app.schemas import BookCreate, BookPage, BookSort, BookUpdate
+from app.schemas import BookCreate, BookPage, BookSort, BookUpdate , BookOut
 
 
 def create_book(db: Session, data: BookCreate) -> Book:
@@ -81,7 +81,7 @@ def list_books(
         query = query.where(Book.price_cents >= min_price)
     if max_price is not None:
         query = query.where(Book.price_cents <=max_price)
-    total = db.scalar(select(func.count()).select_from(query.subquery()))
+    total = db.scalar(select(func.count()).select_from(query.subquery())) or 0
     # TODO: apply ``sort``
     sort_columns = {
         "title": Book.title.asc(),
@@ -96,4 +96,9 @@ def list_books(
     books = db.scalars(query.order_by(*order_by).limit(limit).offset(offset)).all()
     # total = len(books)
 
-    return BookPage(items=books, total=total, limit=limit, offset=offset)
+    return BookPage(
+    items=[BookOut.model_validate(book) for book in books],
+    total=total,
+    limit=limit,
+    offset=offset,
+)
