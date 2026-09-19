@@ -30,3 +30,7 @@ members
 8. in memebers service fixed tier_at_least > to >=
 9. fixed email normalization (strip+lower)
 10. implmented reject an email that is already in use with 409
+
+11. get_member_stats needs due_at returned_at and late fee_cents but it is not available yet. so i will implement it later.
+
+12.  fixed typos.
