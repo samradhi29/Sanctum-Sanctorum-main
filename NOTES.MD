@@ -5,4 +5,13 @@ list of task i am doing to complete the assesment
 
 2.now starting with fixing book part.
 
-in the schema.py fixed the normalized function
+in the schema.py fixed the normalized function for isbn check-
+the highphe extraspace was laready build
+- added - the check for last digit 
+
+3. in services/books.py added reject a duplicate ISBN with 409 
+## AI usage
+
+I used Claude to help with the duplicate ISBN query.
+
+4. Used Claude to generate the initial `update_book` function. It did not include `exclude_unset=True`, so I added it to ensure only the fields provided in the request are updated instead of unset fields being updated to `None`.
