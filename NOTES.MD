@@ -29,4 +29,4 @@ members
 
 8. in memebers service fixed tier_at_least > to >=
 9. fixed email normalization (strip+lower)
-
+10. implmented reject an email that is already in use with 409

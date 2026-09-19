@@ -40,6 +40,9 @@ def create_member(db: Session, data: MemberCreate, now: datetime) -> Member:
     Rules: email (already stripped + lowercased) must be unique -> 409; created_at = now.
     """
     # TODO: reject an email that is already in use with 409
+    exising = db.scalar(select(Member).where(Member.email==data.email))
+    if exising is not None:
+        raise HTTPException(Status_code=409 , detail="email already in use")
     member = Member(name=data.name, email=data.email, tier=data.tier.value, created_at=now)
     db.add(member)
     db.commit()
