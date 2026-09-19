@@ -2,9 +2,8 @@
 from typing import Optional
 
 from fastapi import HTTPException
-from sqlalchemy import select
+from sqlalchemy import select , func , or_
 from sqlalchemy.orm import Session
-
 from app.models import Book
 from app.schemas import BookCreate, BookPage, BookSort, BookUpdate
 

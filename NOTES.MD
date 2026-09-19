@@ -15,3 +15,11 @@ the highphe extraspace was laready build
 I used Claude to help with the duplicate ISBN query.
 
 4. Used Claude to generate the initial `update_book` function. It did not include `exclude_unset=True`, so I added it to ensure only the fields provided in the request are updated instead of unset fields being updated to `None`.
+
+5. Implemented book filtering, sorting, and pagination, including `min_price`/`max_price` filters, sorting, and total count before pagination.
+
+6.added patch route in app/routers/books.py for updating books.
+
+7. after running using chatgpt for debugging
+- fixed import errors
+
