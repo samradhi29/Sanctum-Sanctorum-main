@@ -68,13 +68,33 @@ def list_books(
     """
     query = select(Book)
     if q:
-        query = query.where(Book.title.icontains(q, autoescape=True))
+        query = query.where(
+            or_(
+            Book.title.icontains(q, autoescape=True),
+            Book.author.icontains(q , autoescape=True),
+            )
+            )
+
     if restricted is not None:
         query = query.where(Book.restricted == restricted)
     # TODO: min_price / max_price filters
-
+    if min_price is not None:
+        query = query.where(Book.price_cents <= min_price)
+    if max_price is not None:
+        query = query.where(Book.price_cents <=max_price)
+    total = db.scaler(select(func.count()).select_from(query.subquery()))
     # TODO: apply ``sort``
-    books = db.scalars(query.order_by(Book.id.asc()).limit(limit).offset(offset)).all()
-    total = len(books)
+    sort_columns = {
+        "tittle": Book.title.asc(),
+        "-tittle": Book.title.desc(),
+        "price": Book.price_cents.asc(),
+        "-price": Book.price_cents.desc(),
+
+    }
+    order_by = [sort_columns[sort] , Book.id.asc()] if sort else [Book.id.asc()]
+
+    
+    books = db.scalars(query.order_by(*order_by).limit(limit).offset(offset)).all()
+    # total = len(books)
 
     return BookPage(items=books, total=total, limit=limit, offset=offset)
