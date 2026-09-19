@@ -34,3 +34,8 @@ members
 11. get_member_stats needs due_at returned_at and late fee_cents but it is not available yet. so i will implement it later.
 
 12.  fixed typos.
+
+___________________________________________________
+orders
+
+13. in ordercreate implemented reject an empty items list and the same book_id appearing twice (both 422)
