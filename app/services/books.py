@@ -79,14 +79,14 @@ def list_books(
         query = query.where(Book.restricted == restricted)
     # TODO: min_price / max_price filters
     if min_price is not None:
-        query = query.where(Book.price_cents <= min_price)
+        query = query.where(Book.price_cents >= min_price)
     if max_price is not None:
         query = query.where(Book.price_cents <=max_price)
-    total = db.scaler(select(func.count()).select_from(query.subquery()))
+    total = db.scalar(select(func.count()).select_from(query.subquery()))
     # TODO: apply ``sort``
     sort_columns = {
-        "tittle": Book.title.asc(),
-        "-tittle": Book.title.desc(),
+        "title": Book.title.asc(),
+        "-title": Book.title.desc(),
         "price": Book.price_cents.asc(),
         "-price": Book.price_cents.desc(),
 
