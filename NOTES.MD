@@ -77,3 +77,6 @@ ___________________________________________________
 24. implemented calculate_discount_percent
 
 25. Implemented `create_order` with stock validation, discount calculation, and order creation.
+
+26. Fixed `cancel_order` by adding stock restoration when an order is cancelled.
+
