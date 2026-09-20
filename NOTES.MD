@@ -59,3 +59,5 @@ Decision:
 18. implemented `create_loan` Validated all borrowing conditions, then created the loan and decreased stock.
 
 19. implemented get_loan
+
+20. implemented return_loan
