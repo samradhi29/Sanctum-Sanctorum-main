@@ -101,7 +101,7 @@ class Loan(Base):
     #   - returned_at: nullable, set when the book is returned
     #   - late_fee_cents: charged on return, defaults to 0
     due_at: Mapped[datetime] = mapped_column(DateTime)
-    returned_at: Mapped[Optional[DateTime]] = mapped_column(DateTime , nullable=True , default=None)
+    returned_at: Mapped[Optional[datetime]] = mapped_column(nullable=True , default=None)
     late_fee_cents: Mapped[int] = mapped_column(Integer , default=0)
     member: Mapped[Member] = relationship(back_populates="loans")
     book: Mapped[Book] = relationship()
