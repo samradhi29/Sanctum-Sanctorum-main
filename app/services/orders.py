@@ -4,8 +4,9 @@ from typing import Dict
 
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
-
-from app.models import Member, MemberTier, Order, OrderStatus
+# missing imports
+from app.models import  Book , Member, MemberTier, Order, OrderStatus , OrderItem
+from app.services.members import ensure_can_access_restricted , get_member
 from app.schemas import OrderCreate
 
 # Percentage discount granted by each membership tier.
@@ -23,7 +24,10 @@ BULK_DISCOUNT_PERCENT = 5
 
 def calculate_discount_percent(member: Member, total_quantity: int) -> int:
     """Tier discount, plus the bulk discount when total quantity >= threshold."""
-    raise NotImplementedError("calculate_discount_percent")
+    percent  = TIER_DISCOUNT_PERCENT[member.tier]
+    if total_quantity >= BULK_QUANTITY_THRESHOLD:
+        percent += BULK_DISCOUNT_PERCENT
+    return percent
 
 
 def create_order(db: Session, data: OrderCreate, now: datetime) -> Order:

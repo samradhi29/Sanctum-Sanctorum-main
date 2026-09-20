@@ -71,3 +71,7 @@ ____________________________________________________
 Implemented  after implementing loans because it depends on loan data.
 
 ___________________________________________________
+
+23. missed some implementations of order realised after runing tests
+
+implemented calculate_discount_percent
