@@ -47,7 +47,58 @@ def create_order(db: Session, data: OrderCreate, now: datetime) -> Order:
     # 4. Decrement stock and build OrderItems with the current price as unit_price_cents.
     # 5. Compute subtotal, discount_percent (calculate_discount_percent), discount_cents, total.
     # 6. Save the pending Order with created_at = now and return it.
-    raise NotImplementedError("create_order")
+    member = get_member(db , data.member_id)
+    books: Dict[int , Book] = {}
+    for item in data.items:
+        book = db.get(Book , item.book_id)
+        if book is None:
+            raise HTTPException(status_code=404 , detail=f"Book {item.book_id} not found")
+        books[item.book_id] = book
+    for item in data.items:
+        book = books[item.book_id]
+        if book.restricted:
+            ensure_can_access_restricted(member)
+
+    for item in data.items:
+        book = books[item.book_id]
+        if book.stock < item.quantity:
+            raise HTTPException(status_code=409 , detail=f"Insufficient stock for book {item.book_id}")
+
+    order = Order(
+        member_id = member.id , 
+        status=OrderStatus.PENDING.value,
+        subtotal_cents=0,
+        discount_percent=0,
+        discount_cents=0,
+        total_cents=0,
+        created_at=now,
+    )
+
+    subtotal_cents = 0
+    total_quantity = 0
+    for item in data.items:
+        book = books[item.book_id]
+        book.stock -= item.quantity
+        subtotal_cents += book.price_cents * item.quantity
+        total_quantity += item.quantity
+        order.items.append(
+            OrderItem(book_id=book.id, quantity=item.quantity, unit_price_cents=book.price_cents)
+        )
+
+    discount_percent = calculate_discount_percent(member, total_quantity)
+    discount_cents = subtotal_cents * discount_percent // 100
+    total_cents = subtotal_cents - discount_cents
+
+    order.subtotal_cents = subtotal_cents
+    order.discount_percent = discount_percent
+    order.discount_cents = discount_cents
+    order.total_cents = total_cents
+
+    db.add(order)
+    db.commit()
+    db.refresh(order)
+    return order
+
 
 
 def get_order(db: Session, order_id: int) -> Order:

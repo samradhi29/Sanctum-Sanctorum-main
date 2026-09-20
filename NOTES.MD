@@ -74,4 +74,6 @@ ___________________________________________________
 
 23. missed some implementations of order realised after runing tests
 
-implemented calculate_discount_percent
+24. implemented calculate_discount_percent
+
+25. Implemented `create_order` with stock validation, discount calculation, and order creation.
