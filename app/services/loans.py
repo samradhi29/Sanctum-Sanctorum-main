@@ -1,12 +1,14 @@
 """Library loan operations: borrowing and returning books."""
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional
-
+# added missing imports
+from fastapi import HTTPException
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.models import Loan, MemberTier
 from app.schemas import LoanCreate, LoanOut, LoanStatus
-
+from app.services.members import ensure_can_access_restricted , get_member
 # Maximum concurrent unreturned loans per tier (None = unlimited).
 TIER_LOAN_LIMIT: Dict[str, Optional[int]] = {
     MemberTier.APPRENTICE.value: 1,
@@ -21,7 +23,11 @@ LATE_FEE_PER_DAY_CENTS = 25
 
 def loan_status(loan: Loan, now: datetime) -> LoanStatus:
     """``returned`` if returned; else ``overdue`` if now > due_at; else ``active``."""
-    raise NotImplementedError("loan_status")
+    if loan.returned_at is not None:
+        return "returned"
+    if now> loan.due_at:
+        return "overdue"
+    return "active"
 
 
 def to_loan_out(loan: Loan, now: datetime) -> LoanOut:

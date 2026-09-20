@@ -47,6 +47,6 @@ ___________________________________________________
 Decision:
  `returned_at` can be null because the book might not be returned yet.
  `back_populates` is used to connect Member and Loan, so we can get all loans of a particular member using `member.loans`.
- 
 
 
+15. implemented loan_status in service/loans.py
