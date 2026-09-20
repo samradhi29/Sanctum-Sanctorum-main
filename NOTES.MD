@@ -63,4 +63,11 @@ Decision:
 20. implemented return_loan
 
 21. Implemented `list_member_loans`: gets all loans of the member and optionally filters by status.
+____________________________________________________
 
+
+22. Implemented `get_member_stats` to summarize a member's orders, spending, loans, overdue books, and late fees.
+
+Implemented  after implementing loans because it depends on loan data.
+
+___________________________________________________
