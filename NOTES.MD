@@ -39,3 +39,14 @@ ___________________________________________________
 orders
 
 13. in ordercreate implemented reject an empty items list and the same book_id appearing twice (both 422)
+
+___________________________________________________
+
+14. added missing fields of Loan
+
+Decision:
+ `returned_at` can be null because the book might not be returned yet.
+ `back_populates` is used to connect Member and Loan, so we can get all loans of a particular member using `member.loans`.
+ 
+
+
