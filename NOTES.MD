@@ -61,3 +61,6 @@ Decision:
 19. implemented get_loan
 
 20. implemented return_loan
+
+21. Implemented `list_member_loans`: gets all loans of the member and optionally filters by status.
+
