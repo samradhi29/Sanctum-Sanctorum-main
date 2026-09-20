@@ -54,3 +54,5 @@ Decision:
 16. implemented to_loan_out() use of this function is to convert the DB loan object into the API LoanOut object and calculate the current status before sending the response.
 
 17. implemented calculate_late_fee
+
+18. implemented `create_loan` Validated all borrowing conditions, then created the loan and decreased stock.
