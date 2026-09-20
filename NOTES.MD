@@ -52,3 +52,5 @@ Decision:
 15. implemented loan_status in service/loans.py
 
 16. implemented to_loan_out() use of this function is to convert the DB loan object into the API LoanOut object and calculate the current status before sending the response.
+
+17. implemented calculate_late_fee
