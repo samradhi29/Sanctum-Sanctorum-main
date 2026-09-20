@@ -80,3 +80,9 @@ ___________________________________________________
 
 26. Fixed `cancel_order` by adding stock restoration when an order is cancelled.
 
+____________________________________________________
+
+report
+
+27. Implemented top_books to return the best-selling books based on paid orders.
+
