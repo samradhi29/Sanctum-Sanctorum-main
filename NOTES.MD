@@ -24,6 +24,7 @@ I used Claude to help with the duplicate ISBN query.
 - fixed import errors
 
 
+
 ____________________________________________________
 members
 
@@ -56,3 +57,5 @@ Decision:
 17. implemented calculate_late_fee
 
 18. implemented `create_loan` Validated all borrowing conditions, then created the loan and decreased stock.
+
+19. implemented get_loan
