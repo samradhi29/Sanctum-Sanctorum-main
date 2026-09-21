@@ -190,7 +190,7 @@ function parseDetail(detail) {
  *   context: short human label ("Adding book") used in error toasts.
  *   toast:   set false only for purely decorative lookups.
  */
-const API_BASE = 'http://localhost:8000';
+const API_BASE = '';
 async function api(path, { method = 'GET', body, query, context = '', toast: notify = true } = {}) {
  
 
