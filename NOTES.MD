@@ -91,3 +91,9 @@ ________________________________________________________________________________
 28. Debug:
 Return button was not working because the `loan-return` action was missing from the action handler. 
 Added the action and called `returnLoan(id, target)`, resolving the issue.
+
+
+29. Added `psycopg[binary]` as the only dependency exception because it is required to connect SQLAlchemy to Postgres for deployment; no new dependencies were added for business logic.
+
+30. Made `check_same_thread=False` conditional on SQLite because this option is SQLite-specific and can cause connection issues when using PostgreSQL in production.
+
