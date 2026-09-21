@@ -190,8 +190,11 @@ function parseDetail(detail) {
  *   context: short human label ("Adding book") used in error toasts.
  *   toast:   set false only for purely decorative lookups.
  */
+const API_BASE = 'http://localhost:8000';
 async function api(path, { method = 'GET', body, query, context = '', toast: notify = true } = {}) {
-  let url = path;
+ 
+
+let url = API_BASE + path;
   if (query) {
     const params = new URLSearchParams();
     for (const [k, v] of Object.entries(query)) {
@@ -1399,6 +1402,7 @@ function initActions() {
       case 'cancel-edit': cancelBookEdit(); break;
       case 'save-book': saveBookEdit(id); break;
       case 'add-to-cart': addToCart(id); break;
+      case 'loan-return': returnLoan(id, target); break;
       case 'borrow': borrowBook(id, target); break;
       case 'cart-remove':
         state.cart = state.cart.filter((i) => i.book_id !== id);

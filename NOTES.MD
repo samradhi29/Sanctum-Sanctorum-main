@@ -86,3 +86,8 @@ report
 
 27. Implemented top_books to return the best-selling books based on paid orders.
 
+___________________________________________________________________________________
+
+28. Debug:
+Return button was not working because the `loan-return` action was missing from the action handler. 
+Added the action and called `returnLoan(id, target)`, resolving the issue.

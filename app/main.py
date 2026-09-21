@@ -26,7 +26,7 @@ async def lifespan(_: FastAPI):
     yield
 
 
-async def not_implemented_handler(_: Request, exc: NotImplementedError) -> JSONResponse:
+async def not_implemented_handler(_: Request, exc: Exception) -> JSONResponse:
     return JSONResponse(status_code=501, content={"detail": f"Not implemented: {exc}"})
 
 
