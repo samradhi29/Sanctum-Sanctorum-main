@@ -5,6 +5,7 @@ from typing import Dict
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 # missing imports
+from sqlalchemy import select
 from app.models import  Book , Member, MemberTier, Order, OrderStatus , OrderItem
 from app.services.members import ensure_can_access_restricted , get_member
 from app.schemas import OrderCreate
@@ -47,25 +48,45 @@ def create_order(db: Session, data: OrderCreate, now: datetime) -> Order:
     # 4. Decrement stock and build OrderItems with the current price as unit_price_cents.
     # 5. Compute subtotal, discount_percent (calculate_discount_percent), discount_cents, total.
     # 6. Save the pending Order with created_at = now and return it.
-    member = get_member(db , data.member_id)
-    books: Dict[int , Book] = {}
+
+    member = get_member(db, data.member_id)
+
+    books: Dict[int, Book] = {}
+
     for item in data.items:
-        book = db.get(Book , item.book_id)
+        # book = db.get(Book, item.book_id)
+        # changed the previous row for the locking
+        book = db.execute(
+            select(Book)
+            .where(Book.id == item.book_id)
+            .with_for_update()
+        ).scalar_one_or_none()
+
         if book is None:
-            raise HTTPException(status_code=404 , detail=f"Book {item.book_id} not found")
+            raise HTTPException(
+                status_code=404,
+                detail=f"Book {item.book_id} not found"
+            )
+
         books[item.book_id] = book
+
     for item in data.items:
         book = books[item.book_id]
+
         if book.restricted:
             ensure_can_access_restricted(member)
 
     for item in data.items:
         book = books[item.book_id]
+
         if book.stock < item.quantity:
-            raise HTTPException(status_code=409 , detail=f"Insufficient stock for book {item.book_id}")
+            raise HTTPException(
+                status_code=409,
+                detail=f"Insufficient stock for book {item.book_id}"
+            )
 
     order = Order(
-        member_id = member.id , 
+        member_id=member.id,
         status=OrderStatus.PENDING.value,
         subtotal_cents=0,
         discount_percent=0,
@@ -76,13 +97,20 @@ def create_order(db: Session, data: OrderCreate, now: datetime) -> Order:
 
     subtotal_cents = 0
     total_quantity = 0
+
     for item in data.items:
         book = books[item.book_id]
         book.stock -= item.quantity
+
         subtotal_cents += book.price_cents * item.quantity
         total_quantity += item.quantity
+
         order.items.append(
-            OrderItem(book_id=book.id, quantity=item.quantity, unit_price_cents=book.price_cents)
+            OrderItem(
+                book_id=book.id,
+                quantity=item.quantity,
+                unit_price_cents=book.price_cents
+            )
         )
 
     discount_percent = calculate_discount_percent(member, total_quantity)
@@ -97,8 +125,8 @@ def create_order(db: Session, data: OrderCreate, now: datetime) -> Order:
     db.add(order)
     db.commit()
     db.refresh(order)
-    return order
 
+    return order
 
 
 def get_order(db: Session, order_id: int) -> Order:

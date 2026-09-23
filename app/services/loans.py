@@ -66,9 +66,17 @@ def create_loan(db: Session, data: LoanCreate, now: datetime) -> LoanOut:
     late_fee_cents 0, and stock is decremented by one.
     """
     member = get_member(db , data.member_id)
-    book = db.get(Book , data.book_id)
+    # book = db.get(Book , data.book_id)
+    # if book is None:
+    #     raise HTTPException(status_code=404 , detail="Book not found")
+    #changing htis for the locking functionality
+    book = db.execute(
+        select(Book).where(Book.id == data.book_id).with_for_update()
+    ).scalar_one_or_none()
     if book is None:
         raise HTTPException(status_code=404 , detail="Book not found")
+    
+
     if book.restricted:
         ensure_can_access_restricted(member)
     existing_loans = list(

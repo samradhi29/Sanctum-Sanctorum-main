@@ -97,3 +97,30 @@ Added the action and called `returnLoan(id, target)`, resolving the issue.
 
 30. Made `check_same_thread=False` conditional on SQLite because this option is SQLite-specific and can cause connection issues when using PostgreSQL in production.
 
+
+___________________________________________________________________
+completed the delopyment using render and neon
+
+_____________________________________________________
+
+extra part
+
+1. A `GET /members` endpoint with pagination
+
+Added GET /members with limit and offset pagination. Implemented a MemberPage response schema, a list_members() service with COUNT(*) for the total and a paginated query ordered by id, and a router endpoint with validation for limit and offset
+
+
+2. Handle concurrent orders for the last copy of a book safely
+
+To solve the concurrent access problem, which is essentially a race condition, I used SQLAlchemy's `with_for_update()` in both create_order and create_loan. It locks only the specific book row while the transaction is in progress, preventing another request from modifying the same book simultaneously.
+
+This row-level locking is supported by PostgreSQL. SQLite does not support row-level locking and uses broader database-level locking for writes which is less efficient for this use case.
+
+
+3. added some extra test cases in the extra_edge_case file
+
+Mixed restricted items: Added to verify that one unauthorized restricted book blocks the entire order and does not change stock.
+Search wildcard escaping: Added to ensure % in search queries is treated as a literal character, not a SQL wildcard.
+Empty PATCH body: Added to verify that an empty update request does not modify the book.
+Member pagination: Added to ensure total represents all members, not only the members in the current page.
+Cancel order stock restore: Added to verify that cancelling an order restores exactly the quantity that was deducted.

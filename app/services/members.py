@@ -3,11 +3,11 @@ from datetime import datetime
 from typing import List
 
 from fastapi import HTTPException
-from sqlalchemy import select
+from sqlalchemy import select , func
 from sqlalchemy.orm import Session
 # import loan
 from app.models import Loan , Member, MemberTier, Order
-from app.schemas import MemberCreate, MemberStats
+from app.schemas import MemberCreate, MemberStats , MemberPage , MemberOut
 
 # Tiers from lowest to highest; a member's rank is their index in this list.
 TIER_ORDER: List[str] = [
@@ -48,6 +48,19 @@ def create_member(db: Session, data: MemberCreate, now: datetime) -> Member:
     db.commit()
     db.refresh(member)
     return member
+
+
+def list_members(db: Session, limit: int = 20, offset: int = 0) -> MemberPage:
+    """All members, paginated, ordered by id ascending."""
+    total = db.scalar(select(func.count()).select_from(Member)) or 0
+    members = db.scalars(select(Member).order_by(Member.id).limit(limit).offset(offset)).all()
+    return MemberPage(
+        items=[MemberOut.model_validate(m) for m in members],
+        total=total,
+        limit=limit,
+        offset=offset,
+    )
+
 
 
 def get_member(db: Session, member_id: int) -> Member:
